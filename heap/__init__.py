@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 __all__ = ['Heap']
 
 
@@ -39,6 +39,12 @@ class Heap(MutableSet):
 
     def __iter__(self):
         return (value for (key, value) in self.__heap if value != REMOVED)
+
+    def __nonzero__(self):
+        for key, value in self.__heap:
+            if value != REMOVED:
+                return True
+        return False
 
     def __len__(self):
         return sum([1 for item in self])
