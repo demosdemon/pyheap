@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.9'
+__version__ = '0.1.10'
 __all__ = ['Heap']
 
 
@@ -86,5 +86,6 @@ class Heap(MutableSet):
             self |= iterable
 
     def __ior__(self, iterable):
-        self.__heap.extend(map(self.__pair, iterable))
+        pair = self.__pair
+        self.__heap.extend(map(pair, iterable))
         heapq.heapify(self.__heap)
