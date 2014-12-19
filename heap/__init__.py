@@ -4,20 +4,19 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __all__ = ['Heap']
 
 
 class Heap(MutableSet):
     def __init__(self, sequence=None, key=None):
+        self.__heap = []
+
         self.key = key or (lambda x: x)
         if not isinstance(self._key, Callable):
             raise TypeError('key must be callable or None, got %s' % type(self._key).__name__)
 
-        self.__heap = []
-
-        if sequence:
-            self |= sequence
+        self.extend(sequence)
 
     @property
     def key(self):
@@ -79,4 +78,5 @@ class Heap(MutableSet):
             raise KeyError
 
     def extend(self, iterable):
-        self |= iterable
+        if iterable:
+            self |= iterable
