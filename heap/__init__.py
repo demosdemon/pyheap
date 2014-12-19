@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 __all__ = ['Heap']
 
 
@@ -51,14 +51,15 @@ class Heap(MutableSet):
         return len(self.__heap)
 
     def add(self, item):
-        pair = (self.key(item), item)
-        heapq.heappush(self.__heap, pair)
+        heapq.heappush(self.__heap, self.__pair(item))
 
     push = add
 
     def discard(self, item):
+        cmpkey = self.key(item)
+
         for idx, (key, value) in enumerate(self.__heap):
-            if value == item:
+            if key == cmpkey:
                 self.__heap[idx] = REMOVED
 
     def pop(self):
@@ -69,7 +70,7 @@ class Heap(MutableSet):
         raise KeyError
 
     def clear(self):
-        self.__heap = []
+        del self.__heap[:]
 
     def peek(self):
         while self.__heap and self.__heap[0][1] is REMOVED:
@@ -85,5 +86,5 @@ class Heap(MutableSet):
             self |= iterable
 
     def __ior__(self, iterable):
-        self.__heap.extend(self.__pair(value) for value in iterable)
+        self.__heap.extend(map(self.__pair, iterable))
         heapq.heapify(self.__heap)
