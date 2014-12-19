@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 __all__ = ['Heap']
 
 
@@ -24,9 +24,9 @@ class Heap(MutableSet):
             raise TypeError('key must be callable, got %s' % type(value).__name__)
         self.__key = value
 
-        tmp = [self.__pair(item) for item in self]
-        heapq.heapify(tmp)
-        self.__heap = tmp
+        tmp = list(self)
+        self.clear()
+        self.extend(tmp)
 
     def __pair(self, value):
         return self.key(value), value
@@ -82,3 +82,7 @@ class Heap(MutableSet):
     def extend(self, iterable):
         if iterable:
             self |= iterable
+
+    def __ior__(self, iterable):
+        self.__heap.extend(self.__pair(value) for value in iterable)
+        heapq.heapify(self.__heap)
