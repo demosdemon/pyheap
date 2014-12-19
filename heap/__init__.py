@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 __all__ = ['Heap']
 
 
@@ -68,7 +68,7 @@ class Heap(MutableSet):
         raise KeyError
 
     def clear(self):
-        self.__heap.clear()
+        self.__heap = []
 
     def peek(self):
         while self.__heap and self.__heap[0][1] == REMOVED:
