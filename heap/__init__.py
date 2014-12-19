@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 __all__ = ['Heap']
 
 
@@ -38,7 +38,7 @@ class Heap(MutableSet):
         return False
 
     def __iter__(self):
-        return (value for (key, value) in self.__heap if value != REMOVED)
+        return (value for (key, value) in self.__heap if value is not REMOVED)
 
     def __nonzero__(self):
         try:
@@ -48,7 +48,7 @@ class Heap(MutableSet):
             return False
 
     def __len__(self):
-        return sum([1 for item in self])
+        return len(self.__heap)
 
     def add(self, item):
         pair = (self.key(item), item)
@@ -64,7 +64,7 @@ class Heap(MutableSet):
     def pop(self):
         while self.__heap:
             (key, value) = heapq.heappop(self.__heap)
-            if value != REMOVED:
+            if value is not REMOVED:
                 return value
         raise KeyError
 
@@ -72,7 +72,7 @@ class Heap(MutableSet):
         self.__heap = []
 
     def peek(self):
-        while self.__heap and self.__heap[0][1] == REMOVED:
+        while self.__heap and self.__heap[0][1] is REMOVED:
             heapq.heappop(self.__heap)
 
         if self.__heap:
