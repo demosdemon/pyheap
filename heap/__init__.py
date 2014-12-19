@@ -1,16 +1,17 @@
 # coding=utf-8
 
 import heapq
+from itertools import count
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.10'
+__version__ = '0.1.11'
 __all__ = ['Heap']
 
 
 class Heap(MutableSet):
     def __init__(self, sequence=None, key=None):
-        self.__heap = []
+        self.clear()
         self.key = key or (lambda x: x)
         self.extend(sequence)
 
@@ -29,16 +30,16 @@ class Heap(MutableSet):
         self.extend(tmp)
 
     def __pair(self, value):
-        return self.key(value), value
+        return self.key(value), next(self.__count), value
 
     def __contains__(self, item):
-        for key, value in self.__heap:
+        for key, _, value in self.__heap:
             if item == value:
                 return True
         return False
 
     def __iter__(self):
-        return (value for (key, value) in self.__heap if value is not REMOVED)
+        return (value for (key, _, value) in self.__heap if value is not REMOVED)
 
     def __nonzero__(self):
         try:
@@ -58,26 +59,27 @@ class Heap(MutableSet):
     def discard(self, item):
         cmpkey = self.key(item)
 
-        for idx, (key, value) in enumerate(self.__heap):
+        for idx, (key, _, value) in enumerate(self.__heap):
             if key == cmpkey:
-                self.__heap[idx] = REMOVED
+                self.__heap[idx][-1] = REMOVED
 
     def pop(self):
         while self.__heap:
-            (key, value) = heapq.heappop(self.__heap)
+            (key, _, value) = heapq.heappop(self.__heap)
             if value is not REMOVED:
                 return value
         raise KeyError
 
     def clear(self):
-        del self.__heap[:]
+        self.__sequence = count()
+        self.__heap = []
 
     def peek(self):
-        while self.__heap and self.__heap[0][1] is REMOVED:
+        while self.__heap and self.__heap[0][-1] is REMOVED:
             heapq.heappop(self.__heap)
 
         if self.__heap:
-            return self.__heap[0][1]
+            return self.__heap[0][-1]
         else:
             raise KeyError
 
@@ -86,6 +88,5 @@ class Heap(MutableSet):
             self |= iterable
 
     def __ior__(self, iterable):
-        pair = self.__pair
-        self.__heap.extend(map(pair, iterable))
+        self.__heap.extend(map(self.__pair, iterable))
         heapq.heapify(self.__heap)
