@@ -5,7 +5,7 @@ from itertools import count
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.11'
+__version__ = '0.1.12'
 __all__ = ['Heap']
 
 
@@ -30,7 +30,7 @@ class Heap(MutableSet):
         self.extend(tmp)
 
     def __pair(self, value):
-        return self.key(value), next(self.__count), value
+        return self.key(value), next(self.__sequence), value
 
     def __contains__(self, item):
         for key, _, value in self.__heap:
