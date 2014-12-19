@@ -4,7 +4,7 @@ import heapq
 from collections import MutableSet, Callable
 
 REMOVED = (object(), )
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __all__ = ['Heap']
 
 
@@ -77,3 +77,6 @@ class Heap(MutableSet):
             return self.__heap[0][1]
         else:
             raise KeyError
+
+    def extend(self, iterable):
+        self |= iterable
